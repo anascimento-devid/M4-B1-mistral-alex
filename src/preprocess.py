@@ -13,12 +13,62 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 # TODO — Sélectionne tes features (exclure les fuites !)
+
 FEATURES: list[str] = [
-    # ex. "season", "year", "month", "hour", ...
+    "season",
+    "year",
+    "month",
+    "hour",
+    "is_holiday",
+    "weekday",
+    "is_working_day",
+    "weather",
+    "temperature_norm",
+    "temperature_feels_norm",
+    "humidity_norm",
+    "windspeed_norm",
 ]
+
 TARGET: str = "total_rentals"
+
+CATEGORICAL_FEATURES = [
+    "season",
+    "weather",
+    "weekday",
+]
+
+NUMERIC_FEATURES = [
+    "year",
+    "month",
+    "hour",
+    "is_holiday",
+    "is_working_day",
+    "temperature_norm",
+    "temperature_feels_norm",
+    "humidity_norm",
+    "windspeed_norm",
+]
+
+
+def build_preprocessor() -> ColumnTransformer:
+    return ColumnTransformer(
+        transformers=[
+            (
+                "cat",
+                OneHotEncoder(handle_unknown="ignore"),
+                CATEGORICAL_FEATURES,
+            ),
+            (
+                "num",
+                StandardScaler(),
+                NUMERIC_FEATURES,
+            ),
+        ]
+    )
 
 
 def load_dataset(path: Path) -> tuple[pd.DataFrame, pd.Series]:
