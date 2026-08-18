@@ -36,4 +36,4 @@ Voir `verdict.md` (5 lignes max).
 
 ---
 
-*Document remis à Inès Tabet — `<date>`.*
+*Document remis à Inès Tabet — `18/08/2026`.*
