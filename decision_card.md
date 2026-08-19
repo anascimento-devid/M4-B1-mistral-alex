@@ -7,29 +7,30 @@
 
 ## Critères que je mobilise (mon ordre de priorité)
 
-1. ... (ex. *« Précision sur le pic printemps-été »*)
-2. ...
-3. ...
-4. ...
+1. Performance prédictive : MAE / RMSE faibles et R² élevé
+2. Robustesse des performances selon les périodes
+3. Latence d'inférence et coût de calcul
+4. Explicabilité du modèle
 
 ## Modèles que j'ai benchmarkés
 
 > Liste rapide.
 
-- Famille A : ...
-- Famille B : ...
-- Famille C : ...
+- Famille A : Ridge
+- Famille B : RandomForestRegressor
+- Famille C : HistGradientBoostingRegressor
 
 ## Pour quel cas je choisirais chaque famille ?
 
 > Si Inès me demandait *« et pour un cas X, vous prendriez quoi ? »*.
 
+
 | Cas | Famille recommandée | Pourquoi |
 |---|---|---|
-| **Mistral Bike Sharing (saisonnalité forte)** | ... | ... |
-| **Cas similaire mais 100 lignes seulement** | ... | ... |
-| **Cas avec exigence d'explicabilité réglementaire** | ... | ... |
-| **Cas avec latence < 5 ms imposée** | ... | ... |
+| **Mistral Bike Sharing (saisonnalité forte)** | HistGradientBoosting | Meilleures performances du benchmark : MAE 49,84, RMSE 74,03 et R² 0,805 |
+| **Cas similaire mais 100 lignes seulement** | Ridge | Modèle simple, peu de paramètres et risque de surapprentissage plus facile à maîtriser sur un très petit dataset |
+| **Cas avec exigence d'explicabilité réglementaire** | Ridge | Les coefficients permettent de comprendre directement l'influence des variables sur la prédiction |
+| **Cas avec latence < 5 ms imposée** | Ridge ou HistGradientBoosting | Les deux respectent la contrainte dans le benchmark ; HistGradientBoosting serait privilégié si la précision reste prioritaire |
 
 ## Analyse éthique et réglementaire (C2)
 
@@ -37,10 +38,17 @@
 > **conclure**. Conclure « risque faible » est une réponse valide et
 > professionnelle — pas besoin d'inventer un problème.
 
-- Le dataset contient-il des **données personnelles** ? ...
-- Utilise-t-on un **attribut sensible** / y a-t-il un risque de **biais** envers une population ? ...
-- Y a-t-il un enjeu **RGPD / confidentialité** ? ...
-- Quel **impact sociétal** de l'usage du modèle (destinataires directs/indirects) ? ...
+- Le dataset contient-il des **données personnelles** ? 
+- - Le dataset ne semble pas contenir de données personnelles directement identifiantes.
+
+- Utilise-t-on un **attribut sensible** / y a-t-il un risque de **biais** envers une population ?
+- - Les variables utilisées ne correspondent pas à des attributs sensibles concernant des individus.
+
+- Y a-t-il un enjeu **RGPD / confidentialité** ? 
+- - Le risque RGPD et de discrimination directe est donc faible dans le cadre de cet usage.
+- Quel **impact sociétal** de l'usage du modèle (destinataires directs/indirects) ? 
+- - Le modèle peut toutefois influencer indirectement des décisions opérationnelles de tarification ou de disponibilité.
+
 - **Conclusion** : ... (ex. *« données agrégées, pas de PII → risque faible ;
   si on exploitait des trajets individuels, il faudrait une analyse RGPD +
   minimisation + réidentification »*)
@@ -52,17 +60,15 @@
 > pro = évaluer les limites d'un modèle au-delà de ses performances. Une ligne
 > suffit. Cf. mini-cours `06_Menaces_robustesse_essentiel.md`.
 
-- **Vulnérabilité identifiée** : ... (ex. extrapole sans alerter sur une
-  température hors-distribution)
-- **Garde-fou envisagé** en conception : ... (ex. contrôle des bornes d'entrée /
-  seuil d'abstention) — *mitigation complète = M7, monitoring du drift = M6*
+- **Vulnérabilité identifiée** : le modèle peut produire des prédictions peu fiables sur des situations très différentes de celles observées pendant l'entraînement.
+- **Garde-fou envisagé** : contrôler les bornes des variables d'entrée et signaler les données hors distribution.
 
 ## Ce que je veux apporter à la grille collective
 
 > 1-2 contributions ou questions à pousser pendant la restitution.
 
-- ...
-- ...
+- La performance seule ne suffit pas : intégrer systématiquement explicabilité, latence et robustesse dans le choix final.
+- Définir les critères de décision en fonction du contexte métier plutôt que désigner un modèle comme systématiquement meilleur.
 
 ---
 
